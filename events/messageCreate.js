@@ -178,6 +178,9 @@ function scoutContainsRoomsInOrder(scoutDescription,wantedRoomsList){
 		if (wantedRoomsList[wantedRoomsIndex] == scoutRoom){
 			resultList.push(scoutRoom);
 			wantedRoomsIndex++;
+			if (wantedRoomsIndex == wantedRoomsList.length){
+				break;
+			}
 		}
 	}
 	var result = resultList.length == wantedRoomsList.length;
