@@ -44,7 +44,7 @@ module.exports = {
 					scouter = message.content.replace(' - Logged out', '');
 	
 					fetcher = await message.channel.messages.fetch();
-					leaveMessages = fetcher.filter(x => x.content === scouter + ' - Raid Taken. Now Scouting.');
+					leaveMessages = fetcher.filter(x => x.content === scouter + ' - Logged out');
 					fetcherFiltered = fetcher.filter(x => x.embeds.length > 0 );
 					scoutsToDelete = fetcherFiltered.filter(x => x.embeds[0].title === scouter);
 					await message.channel.bulkDelete(scoutsToDelete);
@@ -140,128 +140,47 @@ module.exports = {
 function isVTV(description){
 	console.log('Checking if VTV');
 	console.log(description);
-	var substring = description.substring(1,description.length - 1);
-	var a = substring.split(', ');
-	var result = [];
-	for(const el of a){
-		if (el == 'Vasa'){
-			if (result.length != 0){
-				console.log('false');
-				console.log("Result array log:");
-				for (const r of result){
-					console.log(r);
-				}
-				return false;
-			}
-			result.push(el);
-		}
-		if (el == 'Tekton'){
-			if (result.length != 1){
-				console.log('false');
-				console.log("Result array log:");
-				for (const r of result){
-					console.log(r);
-				}
-				return false;
-			}
-			if (result[0] != 'Vasa'){
-				console.log('false');
-				console.log("Result array log:");
-				for (const r of result){
-					console.log(r);
-				}
-				return false;
-			}
-			result.push(el);
-		}
-		if (el == "Vespula"){
-			if (result.length != 2){
-				console.log('false');
-				console.log("Result array log:");
-				for (const r of result){
-					console.log(r);
-				}
-				return false;
-			}
-			if (!(result[0] == 'Vasa' && result[1] == 'Tekton')){
-				console.log('false');
-				console.log("Result array log:");
-				for (const r of result){
-					console.log(r);
-				}
-				return false;
-			}
-			result.push(el);
-		}
-	}
-	console.log("Result array log:");
-	for (const r of result){
-		console.log(r);
-	}
-	console.log(result.length == 3);
-	return result.length == 3;
+	return scoutContainsRoomsInOrder(description,['Vasa','Tekton','Vespula'])
+			&& scoutContainsRooms(description,['Tightrope','Crabs']);
 }
 function isReverseVTV(description){
 	console.log('Check if Reverse VTV');
 	console.log(description);
-	var substring = description.substring(1,description.length - 1);
-	var a = substring.split(', ');
-	var result = [];
-	for(const el of a){
-		if (el == 'Vespula'){
-			if (result.length != 0){
-				console.log('false');
-				console.log("Result array log:");
-				for (const r of result){
-					console.log(r);
-				}
-				return false;
-			}
-			result.push(el);
-		}
-		if (el == 'Tekton'){
-			if (result.length != 1){
-				console.log('false');
-				console.log("Result array log:");
-				for (const r of result){
-					console.log(r);
-				}
-				return false;
-			}
-			if (result[0] != 'Vespula'){
-				console.log('false');
-				console.log("Result array log:");
-				for (const r of result){
-					console.log(r);
-				}
-				return false;
-			}
-			result.push(el);
-		}
-		if (el == "Vasa"){
-			if (result.length != 2){
-				console.log('false');
-				console.log("Result array log:");
-				for (const r of result){
-					console.log(r);
-				}
-				return false;
-			}
-			if (!(result[0] == 'Vespula' && result[1] == 'Tekton')){
-				console.log('false');
-				console.log("Result array log:");
-				for (const r of result){
-					console.log(r);
-				}
-				return false;
-			}
-			result.push(el);
+	return scoutContainsRoomsInOrder(description,['Vespula','Tekton','Vasa'])
+			&& scoutContainsRooms(description,['Tightrope','Crabs']);
+}
+
+//Can contain duplicate room --> need different function for large scouts
+function scoutContainsRooms(scoutDescription,wantedRoomsList)
+{
+	var scoutTrimmed = scoutDescription.substring(1,scoutDescription.length - 1);
+	var scoutList = scoutTrimmed.split(', ');
+	var wantedRoomsSet = new Set(wantedRoomsList);
+
+
+	for (const scoutRoom of scoutList){
+		if (wantedRoomsSet.has(scoutRoom)){
+			wantedRoomsSet.delete(scoutRoom);
 		}
 	}
-	console.log("Result array log:");
-	for (const r of result){
-		console.log(r);
+	var result = wantedRoomsSet.size == 0;
+	console.log(`Scout ${result ? 'contains': "does not contain"} wanted rooms :${wantedRoomsList.toString()}`);
+	return result;
+}
+
+function scoutContainsRoomsInOrder(scoutDescription,wantedRoomsList){
+	var scoutTrimmed = scoutDescription.substring(1,scoutDescription.length - 1);
+	var scoutList = scoutTrimmed.split(', ');
+	var resultList = [];
+
+	var wantedRoomsIndex = 0
+	for (const scoutRoom of scoutList){
+		if (wantedRoomsList[wantedRoomsIndex] == scoutRoom){
+			resultList.push(scoutRoom);
+			wantedRoomsIndex++;
+		}
 	}
-	console.log(result.length == 3);
-	return result.length == 3;
+	var result = resultList.length == wantedRoomsList.length;
+	console.log(`Scout ${result ? 'contains': "does not contain"} wanted rooms :${wantedRoomsList.toString()} in the correct order`);
+	return result;
 }
