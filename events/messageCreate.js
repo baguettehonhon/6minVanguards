@@ -89,54 +89,54 @@ module.exports = {
 			}
 			//#region MyMessages
 			//Check if i'm the author 
-			if (message.author.id == '209429220131209216'){
+			// if (message.author.id == '209429220131209216'){
 				//Default roles message.
-				if (message.content === "!rolesmessage"){
-					var rolesChannel = message.guild.channels.cache.find(channel => channel.name === "roles");
-					const messageSent = rolesChannel.send(
-            			"React to this message with the role you want to be pinged with when a bot finds that type of scout.\n" + 
-           				"VTV: 🏃‍♂️\n"+
-            			"Reverse VTV: 🤸‍♂️\n"
-						//"VTG: "
-						)
-						.then(sentMessage => {
-							sentMessage.react('🏃‍♂️')
-							sentMessage.react('🤸‍♂️')
-						})
-						global.rolesMessageId = message.id;
-						message.delete();
-						return;
-				}
-				if (message.content === "!test"){
-					var replyId = await message.reply('<@&' + '1058709382554198119' + '>').then(m => m.id);
-					replyMap.set('me', replyId);
+				// if (message.content === "!rolesmessage"){
+				// 	var rolesChannel = message.guild.channels.cache.find(channel => channel.name === "roles");
+				// 	const messageSent = rolesChannel.send(
+            	// 		"React to this message with the role you want to be pinged with when a bot finds that type of scout.\n" + 
+           		// 		"VTV: 🏃‍♂️\n"+
+            	// 		"Reverse VTV: 🤸‍♂️\n"
+				// 		//"VTG: "
+				// 		)
+				// 		.then(sentMessage => {
+				// 			sentMessage.react('🏃‍♂️')
+				// 			sentMessage.react('🤸‍♂️')
+				// 		})
+				// 		global.rolesMessageId = message.id;
+				// 		message.delete();
+				// 		return;
+				// }
+				// if (message.content === "!test"){
+				// 	var replyId = await message.reply('<@&' + '1058709382554198119' + '>').then(m => m.id);
+				// 	replyMap.set('me', replyId);
 					
-				}
-				if (message.content === "!delete"){
-					const test = true;
-					if (replyMap.has('me')){
-						const id = replyMap.get('me');
-						message.channel.messages.fetch(id).then(m => m.delete())
-						replyMap.delete('me');
-					}
-				}
-				if (message.content.startsWith("!rolesmessage")){
-					var rolesChannel = message.guild.channels.cache.find(channel => channel.name === "roles");
-					rolesChannel.send(
-            			"React to this message with the role you want to be pinged with when a bot finds that type of scout.\n" + 
-            			"VTV: 🏃‍♂️\n" +
-            			"Reverse VTV: 🤸‍♂️\n" + 
-						""
-        			);
-					var t = true;
-				}
-				else{
-					var testMessage = message.content.substring(1,message.length);
-					var test1 = isVTV(testMessage);
-					var test2 = isReverseVTV(testMessage);
-					var test3 = true; 
-				}
-			}
+				// }
+				// if (message.content === "!delete"){
+				// 	const test = true;
+				// 	if (replyMap.has('me')){
+				// 		const id = replyMap.get('me');
+				// 		message.channel.messages.fetch(id).then(m => m.delete())
+				// 		replyMap.delete('me');
+				// 	}
+				// }
+				// if (message.content.startsWith("!rolesmessage")){
+				// 	var rolesChannel = message.guild.channels.cache.find(channel => channel.name === "roles");
+				// 	rolesChannel.send(
+            	// 		"React to this message with the role you want to be pinged with when a bot finds that type of scout.\n" + 
+            	// 		"VTV: 🏃‍♂️\n" +
+            	// 		"Reverse VTV: 🤸‍♂️\n" + 
+				// 		""
+        		// 	);
+				// 	var t = true;
+				// }
+				// else{
+				// 	var testMessage = message.content.substring(1,message.length);
+				// 	var test1 = isVTV(testMessage);
+				// 	var test2 = isReverseVTV(testMessage);
+				// 	var test3 = true; 
+				// }
+			// }
 			//#endregion
 		}
 		//#endregion
