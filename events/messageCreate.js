@@ -89,74 +89,83 @@ module.exports = {
 			}
 			//#region MyMessages
 			//Check if i'm the author 
-			// if (message.author.id == '209429220131209216'){
-			// 	//Default roles message.
-			// 	if (message.content === "!rolesmessage"){
-			// 		var rolesChannel = message.guild.channels.cache.find(channel => channel.name === "roles");
-			// 		const messageSent = rolesChannel.send(
-            // 			"React to this message with the role you want to be pinged with when a bot finds that type of scout.\n" + 
-           	// 			"VTV: 🏃‍♂️\n"+
-            // 			"Reverse VTV: 🤸‍♂️\n"
-			// 			//"VTG: "
-			// 			)
-			// 			.then(sentMessage => {
-			// 				sentMessage.react('🏃‍♂️')
-			// 				sentMessage.react('🤸‍♂️')
-			// 			})
-			// 			global.rolesMessageId = message.id;
-			// 			message.delete();
-			// 			return;
-			// 	}
-				// if (message.content === "!test"){
-				// 	var replyId = await message.reply('<@&' + '1058709382554198119' + '>').then(m => m.id);
-				// 	replyMap.set('me', replyId);
+			if (message.author.id == '209429220131209216'){
+				//Default roles message.
+				if (message.content === "!rolesmessage"){
+					var rolesChannel = message.guild.channels.cache.find(channel => channel.name === "roles");
+					const messageSent = rolesChannel.send(
+            			"React to this message with the role you want to be pinged with when a bot finds that type of scout.\n" + 
+           				"VTV: 🏃‍♂️\n"+
+            			"Reverse VTV: 🤸‍♂️\n"
+						//"VTG: "
+						)
+						.then(sentMessage => {
+							sentMessage.react('🏃‍♂️')
+							sentMessage.react('🤸‍♂️')
+						})
+						global.rolesMessageId = message.id;
+						message.delete();
+						return;
+				}
+				if (message.content === "!test"){
+					var replyId = await message.reply('<@&' + '1058709382554198119' + '>').then(m => m.id);
+					replyMap.set('me', replyId);
 					
-				// }
-				// if (message.content === "!delete"){
-				// 	const test = true;
-				// 	if (replyMap.has('me')){
-				// 		const id = replyMap.get('me');
-				// 		message.channel.messages.fetch(id).then(m => m.delete())
-				// 		replyMap.delete('me');
-				// 	}
-				// }
-				// if (message.content.startsWith("!rolesmessage")){
-				// 	var rolesChannel = message.guild.channels.cache.find(channel => channel.name === "roles");
-				// 	rolesChannel.send(
-            	// 		"React to this message with the role you want to be pinged with when a bot finds that type of scout.\n" + 
-            	// 		"VTV: 🏃‍♂️\n" +
-            	// 		"Reverse VTV: 🤸‍♂️\n" + 
-				// 		""
-        		// 	);
-				// 	var t = true;
-				// }
+				}
+				if (message.content === "!delete"){
+					const test = true;
+					if (replyMap.has('me')){
+						const id = replyMap.get('me');
+						message.channel.messages.fetch(id).then(m => m.delete())
+						replyMap.delete('me');
+					}
+				}
+				if (message.content.startsWith("!rolesmessage")){
+					var rolesChannel = message.guild.channels.cache.find(channel => channel.name === "roles");
+					rolesChannel.send(
+            			"React to this message with the role you want to be pinged with when a bot finds that type of scout.\n" + 
+            			"VTV: 🏃‍♂️\n" +
+            			"Reverse VTV: 🤸‍♂️\n" + 
+						""
+        			);
+					var t = true;
+				}
+				else{
+					var testMessage = message.content.substring(1,message.length);
+					var test1 = isVTV(testMessage);
+					var test2 = isReverseVTV(testMessage);
+					var test3 = true; 
+				}
 			}
 			//#endregion
 		}
 		//#endregion
 	}
-//}
+}
 
 function isVTV(description){
 	console.log('Checking if VTV');
 	console.log(description);
-	return scoutContainsRoomsInOrder(description,['Vasa','Tekton','Vespula'])
-			&& scoutContainsRooms(description,['Tightrope','Crabs']);
+	var result = scoutContainsRoomsInOrder(description,['Vasa','Tekton','Vespula'])
+				&& scoutContainsRooms(description,['Tightrope','Crabs']);
+	console.log(result);
+	return result;
 }
 function isReverseVTV(description){
 	console.log('Check if Reverse VTV');
 	console.log(description);
-	return scoutContainsRoomsInOrder(description,['Vespula','Tekton','Vasa'])
-			&& scoutContainsRooms(description,['Tightrope','Crabs']);
+	var result = scoutContainsRoomsInOrder(description,['Vespula','Tekton','Vasa'])
+				&& scoutContainsRooms(description,['Tightrope','Crabs']);
+	console.log(result);
+	return result;
 }
 
-//Can contain duplicate room --> need different function for large scouts
+//Can contain duplicate room --> might need different function for large scouts
 function scoutContainsRooms(scoutDescription,wantedRoomsList)
 {
 	var scoutTrimmed = scoutDescription.substring(1,scoutDescription.length - 1);
 	var scoutList = scoutTrimmed.split(', ');
 	var wantedRoomsSet = new Set(wantedRoomsList);
-
 
 	for (const scoutRoom of scoutList){
 		if (wantedRoomsSet.has(scoutRoom)){
@@ -164,7 +173,7 @@ function scoutContainsRooms(scoutDescription,wantedRoomsList)
 		}
 	}
 	var result = wantedRoomsSet.size == 0;
-	console.log(`Scout ${result ? 'contains': "does not contain"} wanted rooms :${wantedRoomsList.toString()}`);
+	console.log(`Scout ${result ? 'contains': "does not contain"} wanted rooms : ${wantedRoomsList.toString()}`);
 	return result;
 }
 
@@ -184,6 +193,21 @@ function scoutContainsRoomsInOrder(scoutDescription,wantedRoomsList){
 		}
 	}
 	var result = resultList.length == wantedRoomsList.length;
-	console.log(`Scout ${result ? 'contains': "does not contain"} wanted rooms :${wantedRoomsList.toString()} in the correct order`);
+	console.log(`Scout ${result ? 'contains': "does not contain"} wanted rooms : ${wantedRoomsList.toString()} in the correct order`);
 	return result;
+}
+
+function scoutDoesNotContainRooms(scoutDescription, unwantedRoomsList){
+	var scoutTrimmed = scoutDescription.substring(1,scoutDescription.length - 1);
+	var scoutList = scoutTrimmed.split(', ');
+	var unwantedRoomsSet = new Set(unwantedRoomsList);
+
+	for (const scoutRoom of scoutList){
+		if (unwantedRoomsSet.has(scoutRoom)){
+			console.log(`Scout contains unwanted room: ${scoutRoom}`);
+			return false;
+		}
+	}
+	console.log(`Scout does not contain unwanted rooms: ${unwantedRoomsList.toString()}`);
+	return true;
 }
