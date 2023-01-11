@@ -89,6 +89,9 @@ function isReverseVTV(description){
 
 //Can contain duplicate room --> might need different function for large scouts
 function scoutContainsRooms(scoutList, wantedRooms) {
+
+	//Set -> Array
+	wantedRooms = [...wantedRooms];
 	for (const wantedRoom of wantedRooms) {
 	  if (!scoutList.has(wantedRoom)) {
 		return false;
@@ -98,19 +101,19 @@ function scoutContainsRooms(scoutList, wantedRooms) {
 }
 
 function scoutContainsRoomsInOrder(scoutList,wantedRooms){
-	var resultList = [];
-
-  // Returns a boolean
-  return wantedRooms.every((room) => {
-    while (scoutList[scoutIndex] !== room) {
-      if (!scoutList.has(scoutList[scoutIndex])) {
-        return false;
-      }
-      scoutIndex++;
-    }
-    scoutIndex++;
-    return true;
-  });
+	//Set -> Array
+	wantedRooms = [...wantedRooms];
+  	// Returns a boolean
+  	return wantedRooms.every((room) => {
+	  	while (scoutList[scoutIndex] !== room) {
+		  	if (!scoutList.has(scoutList[scoutIndex])) {
+			  	return false;
+			}
+			scoutIndex++;
+		}
+		scoutIndex++;
+		return true;
+	});
 }
 
 function getScoutRooms(description) {
