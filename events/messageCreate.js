@@ -104,6 +104,7 @@ function scoutContainsRoomsInOrder(scoutList,wantedRooms){
 	//Set -> Array
 	wantedRooms = [...wantedRooms];
   	// Returns a boolean
+	scoutIndex = 0;
   	return wantedRooms.every((room) => {
 	  	while (scoutList[scoutIndex] !== room) {
 		  	if (!scoutList.has(scoutList[scoutIndex])) {
