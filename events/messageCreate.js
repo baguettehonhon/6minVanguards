@@ -1,9 +1,10 @@
 const { Events } = require('discord.js');
 const talkedRecently = new Set();
-const bawnInsults = ["get scouting you Danish snail", "yo Snorelax, put down the macdo and start the scouting", " time to bellyflop out of the water you whale, get scouting", "moooooooooo get scouting"]
+const bawnInsults = ["get scouting you Danish snail", "yo Snorelax, put down the macdo and start the scouting", " time to bellyflop out of the water you whale, get scouting", "moooooooooo get scouting","SCOUT OR ELSE"]
 const replyMap = new Map();
 const VTV = new Set(['Vasa', 'Tekton', 'Vespula']);
 const rVTV = new Set(['Vespula', 'Tekton', 'Vasa']);
+const megaScale = new Set(['Guardians','Tightrope','Shamans','Thieving','Mystics']);
 const PuzzleRooms = new Set(['Tightrope', 'Crabs']);
 
 
@@ -33,7 +34,6 @@ module.exports = {
                 message.channel.messages.fetch(id).then(m => m.delete())
                 replyMap.delete(scouter);
             }
-            // console.log(scoutsToDelete);
         }
         if (message.content.includes(' - Logged out')) {
             //Find corresponding message.
@@ -52,23 +52,20 @@ module.exports = {
                 message.channel.messages.fetch(id).then(m => m.delete())
                 replyMap.delete(scouter);
             }
-            console.log(scoutsToDelete);
         }
         //Check every message
         if (message.embeds.length > 0) {
             //Checks the embed of it for VTV etc etc
             if (isVTV(message.embeds[0].description)) {
-                //var replyId = await message.reply('<@&' + '1058709382554198119' + '>').then(m => m.id);
-                //Doing this for debugging lmao
-                var replyId = await message.reply('VTV').then(m => m.id);
+                var replyId = await message.reply('<@&' + '1058709382554198119' + '>').then(m => m.id);
                 replyMap.set(message.embeds[0].title, replyId);
-
-            }
-            if (isReverseVTV(message.embeds[0].description)) {
-                //var replyId = await message.reply('<@&' + '1058709541648351274' + '>').then(m => m.id);
-                var replyId = await message.reply('rVTV').then(m => m.id);
+            } else if (isReverseVTV(message.embeds[0].description)) {
+                var replyId = await message.reply('<@&' + '1058709541648351274' + '>').then(m => m.id);
                 replyMap.set(message.embeds[0].title, replyId);
-            }
+            } else if (isMegaScale(message.embeds[0].description)) {
+                var replyId = await message.reply('Pay me 50m or else <@' + '298211960120410112' + '>').then(m => m.id);
+                replyMap.set(message.embeds[0].title, replyId);
+			}
         }
         if (message.content.startsWith("!")) {
             //!scout command
@@ -80,16 +77,19 @@ module.exports = {
     }
 }
 
-function isVTV(description) {
+function isMegaScale(description) {
     var scoutList = getScoutRooms(description);
-    console.log("Checking for VTV: ", scoutList);
-    return scoutContainsRoomsInOrder(scoutList, VTV) && scoutContainsRooms(scoutList, PuzzleRooms);
+    return scoutContainsRooms(scoutList, megaScale);
 }
 
 function isReverseVTV(description) {
     var scoutList = getScoutRooms(description);
-    console.log("Checking for ReverseVTV: ", scoutList);
     return scoutContainsRoomsInOrder(scoutList, rVTV) && scoutContainsRooms(scoutList, PuzzleRooms);
+}
+
+function isVTV(description) {
+    var scoutList = getScoutRooms(description);
+    return scoutContainsRoomsInOrder(scoutList, VTV) && scoutContainsRooms(scoutList, PuzzleRooms);
 }
 
 //Can contain duplicate room --> might need different function for large scouts
@@ -107,38 +107,17 @@ function scoutContainsRoomsInOrder(scoutList, wantedRooms) {
     wantedRooms = [...wantedRooms];
     scoutIndex = 0;
     totalWanted = 0;
-    for (let wantedRoom of wantedRooms) {
-        scoutIndex++;
-        if (scoutIndex == scoutList.length) {
-            return false;
-        }
-        if (wantedRoom == scoutList[scoutIndex]) {
+	for(scoutIndex = 0; scoutIndex < scoutList.length; scoutIndex++) 
+	{
+		if (wantedRooms[totalWanted] == scoutList[scoutIndex]) {
             totalWanted++;
         }
-    }
+	}
     return totalWanted == wantedRooms.length;
 }
 
-// function scoutContainsRoomsInOrder(scoutList, wantedRooms) {
-// 	scoutList = [...scoutList];
-// 	wantedRooms = [...wantedRooms];
-// 	scoutIndex = 0;
-// 	totalWanted = 0;
-//     for (let wantedRoom of wantedRooms) 
-//     {
-//         if(scoutIndex == scoutList.length) {
-//             return false;
-//         }
-//         if(wantedRoom == scoutList[scoutIndex]) {
-//             totalWanted++;
-//             scoutIndex++;
-//         }
-//     }
-//     return totalWanted == wantedRooms.length;
-//   }
-
 function getScoutRooms(description) {
-    //Takes the description without brackets
+    //Takes the description without apostrophe
     //Split the substring, since it's seperated by ', '
     //Example: [Tekton, Tightrope, Vasa, Guardians, Crabs]
     return new Set(description.substring(1, description.length - 1).split(', '));
