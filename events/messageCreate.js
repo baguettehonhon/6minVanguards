@@ -80,42 +80,42 @@ module.exports = {
 
 function isVTV(description){
 	var scoutList = getScoutRooms(description);
+	console.log("Checking for VTV: ", scoutList);
 	return scoutContainsRoomsInOrder(scoutList, VTV) && scoutContainsRooms(scoutList,PuzzleRooms);
 }
 function isReverseVTV(description){
 	var scoutList = getScoutRooms(description);
+	console.log("Checking for ReverseVTV: ", scoutList);
 	return scoutContainsRoomsInOrder(scoutList,rVTV) && scoutContainsRooms(scoutList,PuzzleRooms);
 }
 
 //Can contain duplicate room --> might need different function for large scouts
 function scoutContainsRooms(scoutList, wantedRooms) {
-
-	//Set -> Array
-	wantedRooms = [...wantedRooms];
-	for (const wantedRoom of wantedRooms) {
-	  if (!scoutList.has(wantedRoom)) {
-		return false;
-	  }
-	}
-	return true;
+    for (let wantedRoom of wantedRooms) {
+        if (!scoutList.has(wantedRoom)) {
+            return false;
+        }
+    }
+    return true;
 }
 
-function scoutContainsRoomsInOrder(scoutList,wantedRooms){
-	//Set -> Array
+function scoutContainsRoomsInOrder(scoutList, wantedRooms) {
+	scoutList = [...scoutList];
 	wantedRooms = [...wantedRooms];
-  	// Returns a boolean
 	scoutIndex = 0;
-  	return wantedRooms.every((room) => {
-	  	while (scoutList[scoutIndex] !== room) {
-		  	if (!scoutList.has(scoutList[scoutIndex])) {
-			  	return false;
-			}
-			scoutIndex++;
-		}
-		scoutIndex++;
-		return true;
-	});
-}
+	totalWanted = 0;
+    for (let wantedRoom of wantedRooms) 
+    {
+        if(scoutIndex == scoutList.length) {
+            return false;
+        }
+        if(wantedRoom == scoutList[scoutIndex]) {
+            totalWanted++;
+            scoutIndex++;
+        }
+    }
+    return totalWanted == wantedRooms.length;
+  }
 
 function getScoutRooms(description) {
 	//Takes the description without brackets
