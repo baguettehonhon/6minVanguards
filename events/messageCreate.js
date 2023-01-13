@@ -63,7 +63,7 @@ module.exports = {
                 var replyId = await message.reply('<@&' + '1058709541648351274' + '>').then(m => m.id);
                 replyMap.set(message.embeds[0].title, replyId);
             } else if (isMegaScale(message.embeds[0].description)) {
-                var replyId = await message.reply('Pay me 50m or else <@' + '298211960120410112' + '>').then(m => m.id);
+                var replyId = await message.reply('MEGASCALE ALERT').then(m => m.id);
                 replyMap.set(message.embeds[0].title, replyId);
 			}
         }
