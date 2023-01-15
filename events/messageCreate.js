@@ -31,7 +31,7 @@ module.exports = {
             await message.channel.bulkDelete(leaveMessages);
             if (replyMap.has(scouter)) {
                 const id = replyMap.get(scouter);
-                deleteMessage(id);
+                deleteMessage(message, id);
                 replyMap.delete(scouter);
             }
         }
@@ -49,7 +49,7 @@ module.exports = {
             await message.channel.bulkDelete(leaveMessages);
             if (replyMap.has(scouter)) {
                 const id = replyMap.get(scouter);
-                deleteMessage(id);
+                deleteMessage(message, id);
                 replyMap.delete(scouter);
             }
         }
@@ -123,7 +123,7 @@ function getScoutRooms(description) {
     return new Set(description.substring(1, description.length - 1).split(', '));
 }
 
-async function deleteMessage(messageId) {
+async function deleteMessage(message, messageId) {
     try {
         const m = await message.channel.messages.fetch(messageId);
         if(m){
