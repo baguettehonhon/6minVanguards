@@ -31,7 +31,7 @@ module.exports = {
             await message.channel.bulkDelete(leaveMessages);
             if (replyMap.has(scouter)) {
                 const id = replyMap.get(scouter);
-                message.channel.messages.fetch(id).then(m => m.delete())
+                deleteMessage(id);
                 replyMap.delete(scouter);
             }
         }
@@ -49,7 +49,7 @@ module.exports = {
             await message.channel.bulkDelete(leaveMessages);
             if (replyMap.has(scouter)) {
                 const id = replyMap.get(scouter);
-                message.channel.messages.fetch(id).then(m => m.delete())
+                deleteMessage(id);
                 replyMap.delete(scouter);
             }
         }
@@ -121,6 +121,21 @@ function getScoutRooms(description) {
     //Split the substring, since it's seperated by ', '
     //Example: [Tekton, Tightrope, Vasa, Guardians, Crabs]
     return new Set(description.substring(1, description.length - 1).split(', '));
+}
+
+async function deleteMessage(messageId) {
+    try {
+        const m = await message.channel.messages.fetch(messageId);
+        if(m){
+            m.delete();
+        }
+    } catch (err) {
+        if (err.code === 10008) {
+            console.log("Message not found");
+        } else {
+            console.log(err);
+        }
+    }
 }
 
 //Unused?
