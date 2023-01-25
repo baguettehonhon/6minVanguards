@@ -5,8 +5,10 @@ const replyMap = new Map();
 const VTV = new Set(['Vasa', 'Tekton', 'Vespula']);
 const rVTV = new Set(['Vespula', 'Tekton', 'Vasa']);
 const megaScale = new Set(['Guardians','Tightrope','Shamans','Thieving','Mystics']);
-const PuzzleRooms = new Set(['Tightrope', 'Crabs']);
-
+const Crope = new Set(['Crabs', 'Tightrope']);
+const VTVRole = "<@&1058709382554198119>";
+const rVTVRole = "<@&1058709541648351274>";
+const duoRecRole = "<@&1047901877330776114>";
 
 module.exports = {
     name: Events.MessageCreate,
@@ -57,14 +59,26 @@ module.exports = {
         if (message.embeds.length > 0) {
             //Checks the embed of it for VTV etc etc
             if (isVTV(message.embeds[0].description)) {
-                var replyId = await message.reply('<@&' + '1058709382554198119' + '>').then(m => m.id);
+                if(checkCrope(message.embeds[0].description)) {
+                    var replyId = await message.reply(duoRecRole).then(m => m.id);
+                } else {
+                    var replyId = await message.reply(VTVRole).then(m => m.id);
+                }
                 replyMap.set(message.embeds[0].title, replyId);
             } else if (isReverseVTV(message.embeds[0].description)) {
-                var replyId = await message.reply('<@&' + '1058709541648351274' + '>').then(m => m.id);
+                if(checkCrope(message.embeds[0].description)) 
+                {
+                    var replyId = await message.reply(duoRecRole).then(m => m.id);
+                } else {
+                    var replyId = await message.reply(rVTVRole).then(m => m.id);
+                }
                 replyMap.set(message.embeds[0].title, replyId);
             } else if (isMegaScale(message.embeds[0].description)) {
-                var replyId = await message.reply('MEGASCALE ALERT').then(m => m.id);
-                replyMap.set(message.embeds[0].title, replyId);
+                //Second check for layout
+                if(checkMegaScaleLayout(message)) {
+                    var replyId = await message.reply('MEGASCALE ALERT').then(m => m.id);
+                    replyMap.set(message.embeds[0].title, replyId);
+                }
 			}
         }
         if (message.content.startsWith("!")) {
@@ -76,6 +90,12 @@ module.exports = {
         }
     }
 }
+function checkMegaScaleLayout(message) {
+    //Just check if the field name is called Layout and find the value of that ez clap
+    const layoutValue = message.embeds[0].fields.find(f => f.name === "Layout").value;
+    //Regex to check if [FS or [SF matches
+    return /^(\[FS|\[SF)/.test(layoutValue)
+}
 
 function isMegaScale(description) {
     var scoutList = getScoutRooms(description);
@@ -84,12 +104,17 @@ function isMegaScale(description) {
 
 function isReverseVTV(description) {
     var scoutList = getScoutRooms(description);
-    return scoutContainsRoomsInOrder(scoutList, rVTV) && scoutContainsRooms(scoutList, PuzzleRooms);
+    return scoutContainsRoomsInOrder(scoutList, rVTV) && scoutContainsRooms(scoutList, Crope);
 }
 
 function isVTV(description) {
     var scoutList = getScoutRooms(description);
-    return scoutContainsRoomsInOrder(scoutList, VTV) && scoutContainsRooms(scoutList, PuzzleRooms);
+    return scoutContainsRoomsInOrder(scoutList, VTV) && scoutContainsRooms(scoutList, Crope);
+}
+
+function checkCrope(description) {
+    var scoutList = getScoutRooms(description);
+    return scoutContainsRoomsInOrder(scoutList, Crope);
 }
 
 //Can contain duplicate room --> might need different function for large scouts
