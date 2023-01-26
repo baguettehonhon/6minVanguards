@@ -20,31 +20,12 @@ module.exports = {
         if (message.author.username != 'SCOUT ALERT') return;
         //Raid taken message
         //Remove this message and all scout messages associated with it
-        if (message.content.includes(' - Raid Taken. Now Scouting.')) {
-            //Find corresponding message.
+        if (message.content.includes(' - Raid Taken. Now Scouting.') || message.content.includes(' - Logged out')) {
             //Name of the scouter
-            scouter = message.content.replace(' - Raid Taken. Now Scouting.', '');
-
+            scouter = message.content.replace(' - Raid Taken. Now Scouting.', '').replace(' - Logged out', '');
+            //Fetch all messages in the channel
             fetcher = await message.channel.messages.fetch();
-            leaveMessages = fetcher.filter(x => x.content === scouter + ' - Raid Taken. Now Scouting.');
-            fetcherFiltered = fetcher.filter(x => x.embeds.length > 0);
-            scoutsToDelete = fetcherFiltered.filter(x => x.embeds[0].title === scouter);
-            await message.channel.bulkDelete(scoutsToDelete);
-            await message.channel.bulkDelete(leaveMessages);
-            if (replyMap.has(scouter)) {
-                const id = replyMap.get(scouter);
-                deleteMessage(message, id);
-                replyMap.delete(scouter);
-            }
-        }
-        if (message.content.includes(' - Logged out')) {
-            //Find corresponding message.
-
-            //Name of the scouter
-            scouter = message.content.replace(' - Logged out', '');
-
-            fetcher = await message.channel.messages.fetch();
-            leaveMessages = fetcher.filter(x => x.content === scouter + ' - Logged out');
+            leaveMessages = fetcher.filter(x => x.content === scouter + ' - Raid Taken. Now Scouting.' || x.content === scouter + ' - Logged out');
             fetcherFiltered = fetcher.filter(x => x.embeds.length > 0);
             scoutsToDelete = fetcherFiltered.filter(x => x.embeds[0].title === scouter);
             await message.channel.bulkDelete(scoutsToDelete);
