@@ -28,8 +28,12 @@ module.exports = {
             leaveMessages = fetcher.filter(x => x.content === scouter + ' - Raid Taken. Now Scouting.' || x.content === scouter + ' - Logged out');
             fetcherFiltered = fetcher.filter(x => x.embeds.length > 0);
             scoutsToDelete = fetcherFiltered.filter(x => x.embeds[0].title === scouter);
-            await message.channel.bulkDelete(scoutsToDelete);
-            await message.channel.bulkDelete(leaveMessages);
+            try {
+                await message.channel.bulkDelete(scoutsToDelete);
+                await message.channel.bulkDelete(leaveMessages);
+            } catch (error) {
+                console.error(error);
+            }
             if (replyMap.has(scouter)) {
                 const id = replyMap.get(scouter);
                 deleteMessage(message, id);
