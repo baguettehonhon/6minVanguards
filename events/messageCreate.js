@@ -25,13 +25,19 @@ module.exports = {
             scouter = message.content.replace(' - Raid Taken. Now Scouting.', '').replace(' - Logged out', '');
             //Fetch all messages in the channel
             fetcher = await message.channel.messages.fetch();
-            leaveMessages = fetcher.filter(x => x.content === scouter + ' - Raid Taken. Now Scouting.' || x.content === scouter + ' - Logged out');
+            leaveMessages = fetcher.filter(x => x.content === message.content);
             fetcherFiltered = fetcher.filter(x => x.embeds.length > 0);
             scoutsToDelete = fetcherFiltered.filter(x => x.embeds[0].title === scouter);
             try {
                 await message.channel.bulkDelete(scoutsToDelete);
+            } catch (error) {
+                console.error('FAILED TO DELETE SCOUT LAYOUTS FOR SCOUTER: ' + scouter);
+                console.error(error);
+            }
+            try {
                 await message.channel.bulkDelete(leaveMessages);
             } catch (error) {
+                console.error('FAILED TO DELETE SCOUTER MESSAGES FOR SCOUTER: ' + scouter);
                 console.error(error);
             }
             if (replyMap.has(scouter)) {
