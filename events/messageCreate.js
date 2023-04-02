@@ -30,15 +30,15 @@ module.exports = {
             scoutsToDelete = fetcherFiltered.filter(x => x.embeds[0].title === scouter);
             try {
                 await message.channel.bulkDelete(scoutsToDelete);
-            } catch (error) {
-                console.error('FAILED TO DELETE SCOUT LAYOUTS FOR SCOUTER: ' + scouter);
-                console.error(error);
-            }
-            try {
                 await message.channel.bulkDelete(leaveMessages);
             } catch (error) {
-                console.error('FAILED TO DELETE SCOUTER MESSAGES FOR SCOUTER: ' + scouter);
-                console.error(error);
+                if (error.code === 10008) {
+                    // Handle the error when the message was not found
+                    console.log(`Failed to delete a message: ${error.message}`);
+                } else {
+                    // Handle other errors
+                    console.log(`An error occurred while deleting messages: ${error.message}`);
+                }
             }
             if (replyMap.has(scouter)) {
                 const id = replyMap.get(scouter);
