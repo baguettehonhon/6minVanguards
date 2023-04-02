@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { SnowflakeUtil } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -8,10 +7,9 @@ module.exports = {
         .addIntegerOption(option => option.setName('count').setDescription('The number of messages to delete.').setRequired(true)),
     async execute(interaction) {
         const count = interaction.options.getInteger('count');
-        const twoWeeksAgo = SnowflakeUtil.now() - (14 * 24 * 60 * 60 * 1000); // 14 days in milliseconds
-        const messages = await interaction.channel.messages.fetch({ limit: count, before: twoWeeksAgo });
-        await interaction.channel.bulkDelete(messages, true);
-        await interaction.channel.send(`Deleted ${messages.size} messages.`).then(msg => {
+        await interaction.reply(`Deleting ${count} messages...`);
+        await interaction.channel.bulkDelete(count, true);
+        return interaction.channel.send(`Deleted ${count} messages.`).then(msg => {
             setTimeout(() => msg.delete(), 5000);
         });
     },
